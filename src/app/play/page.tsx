@@ -4299,6 +4299,7 @@ function PlayPageClient() {
     episodeTitle?: string;
     searchKeyword?: string;
     danmakuCount?: number;
+    bypassCache?: boolean;
   }) => {
     if (!danmakuPluginRef.current) {
       console.warn('弹幕插件未初始化');
@@ -4328,7 +4329,13 @@ function PlayPageClient() {
 
       console.log(`[弹幕加载] episodeId=${episodeId}, title="${title}", episodeIndex=${episodeIndex}`);
 
-      const comments = await getDanmakuById(episodeId, title, episodeIndex, metadata);
+      const comments = await getDanmakuById(
+        episodeId,
+        title,
+        episodeIndex,
+        { bypassCache: metadata?.bypassCache === true },
+        metadata
+      );
 
       if (comments.length === 0) {
         console.warn('未获取到弹幕数据');
@@ -4491,6 +4498,7 @@ function PlayPageClient() {
                 episode.episodeId,
                 title,
                 nextEpisodeIndex,
+                undefined,
                 {
                   animeId: savedAnimeId,
                   animeTitle: episodesResult.bangumi.animeTitle,
@@ -4542,6 +4550,7 @@ function PlayPageClient() {
             episode.episodeId,
             title,
             nextEpisodeIndex,
+            undefined,
             {
               animeId: selectedAnime.animeId,
               animeTitle: selectedAnime.animeTitle,
@@ -4683,6 +4692,7 @@ function PlayPageClient() {
       episodeTitle: selection.episodeTitle,
       searchKeyword: selection.searchKeyword,
       danmakuCount: selection.danmakuCount,
+      bypassCache: isManual,
     });
   };
 
